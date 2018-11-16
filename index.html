@@ -38,6 +38,7 @@
 			}
 
 			#card li .image {
+				background-size: cover;
 				border: 1px solid #DCDCDC;
 				width: 100px;
 				height: 75px;
@@ -90,7 +91,7 @@
 				}).forEach((park) => {
 					const li = document.createElement('li');
 					li.innerHTML = `
-						<div class="image"></div>
+						<div class="image" style="background-image: url('${park.imageUrl}');"></div>
 						<h3>${park.name}</h3>
 						<p>Todays Hours: ${park.todaysHours}</p>
 					`;
