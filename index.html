@@ -106,8 +106,13 @@
 
 			fetch(WEATHER_API_URL).then(res => res.json()).then((weather) => {
 				var summary = weather.currently.summary;
-				var temperature = weather.currently.temperature;
-				weather_div.innerHTML = `<div>${summary} and ${temperature}&deg;F</div>`;
+				var temperature_f = weather.currently.temperature.toFixed();
+				var temperature_c = ((temperature_f - 32) * (5/9)).toFixed();
+				var hourly_summary = weather.hourly.summary;
+				weather_div.innerHTML = `
+					<div>${summary} and ${temperature_f}&deg;F (${temperature_c}&deg;C).</div>
+					<div>Forecast: ${hourly_summary}</div>
+				`;
 			});
 
 			document.querySelector('body').style.backgroundImage = `url(${background})` || '';
