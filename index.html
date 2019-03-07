@@ -53,7 +53,7 @@
 	<body>
 		<div class="container">
 			<div class="card">
-				<h5 class="card-header">Today at Walt Disney World</h5>
+				<h5 class="card-header">Today at Walt Disney World - <span id="date"></span></h5>
 				<div class="card-body">
 					<div class="row">
 						<div id="weather_section" class="col-sm-12">
@@ -88,6 +88,9 @@
 			const PARKS_API_URL = 'https://wdwntnowapi.azurewebsites.net/api/v2/mobile/parks';
 			const WEATHER_API_URL = 'https://weather.wdwnt.com/api/' + destination;
 			const BACKGROUND_IMAGE = '';
+
+			const date_div = document.getElementById('date');
+			date_div.innerHTML = new Date().toLocaleDateString();
 
 			document.querySelector('body').style.backgroundImage = `url(${background})` || '';
 
