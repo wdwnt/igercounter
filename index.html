@@ -45,6 +45,10 @@
 				font-weight: bold;
 			}
 
+			h3 small {
+				font-size: 12px;
+			}
+
 			#weather_section {
 				margin-bottom: 32px;
 			}
@@ -57,7 +61,7 @@
 				<div class="card-body">
 					<div class="row">
 						<div id="weather_section" class="col-sm-12">
-							<h3 class="header">Current weather</h3>
+							<h3 class="header">Current weather <small><a href="https://darksky.net/poweredby/">Powered by Dark Sky</a></small></h3>
 							<div id="weather"></div>
 						</div>
 						<div class="col-sm-12">
@@ -78,6 +82,10 @@
 				if (!results) return null;
 				if (!results[2]) return '';
 				return decodeURIComponent(results[2].replace(/\+/g, ' '));
+			}
+
+			const fahrenheitToCelsius = (value) => {
+				return ((value - 32) * (5/9)).toFixed();
 			}
 
 			const parks_ul = document.getElementById('parks');
@@ -111,13 +119,29 @@
 				});
 
 				fetch(WEATHER_API_URL).then(res => res.json()).then((weather) => {
-					var summary = weather.currently.summary;
+					var currently = weather.currently;
+					var summary = currently.summary.toLowerCase();
+					var icon_url = `https://darksky.net/images/weather-icons/${currently.icon}.png`;
 					var temperature_f = weather.currently.temperature.toFixed();
-					var temperature_c = ((temperature_f - 32) * (5/9)).toFixed();
-					var hourly_summary = weather.hourly.summary;
+					var temperature_c = fahrenheitToCelsius(temperature_f);
+
+					var hourly_summary = weather.hourly.summary.replace('.', '');
+
+					var todays_weather = weather.daily.data[0];
+					var todays_precipProbability = todays_weather.precipProbability * 100;
+					var todays_high = todays_weather.temperatureHigh.toFixed();
+					var todays_high_c = fahrenheitToCelsius(todays_high);
+					var todays_low = todays_weather.temperatureLow.toFixed();
+					var todays_low_c = fahrenheitToCelsius(todays_low);
+
 					weather_div.innerHTML = `
-						<div>${summary} and ${temperature_f}&deg;F (${temperature_c}&deg;C).</div>
-						<div>Forecast: ${hourly_summary}</div>
+						<div class="row align-items-center">
+							<div class="col-sm-1"><img width="84" height="84" src=${icon_url} /></div>
+							<div class="col-sm-11">
+								<div><strong>${temperature_f}&deg;F (${temperature_c}&deg;C) and ${summary}</strong></div>
+								<div>${hourly_summary} with a high of ${todays_high}&deg;F (${todays_high_c}&deg;C) and a low of ${todays_low}&deg;F (${todays_low_c}&deg;C). There is a ${todays_precipProbability}% chance of rain.</div>
+							</div>
+						</div>
 					`;
 				});
 			}, false);
