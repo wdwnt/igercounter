@@ -40,6 +40,10 @@
 				font-weight: bold;
 			}
 
+			.container {
+				margin-top: 20px;
+			}
+
 			.header {
 				border-bottom: 1px solid #dcdcdc;
 				font-weight: bold;
@@ -137,10 +141,10 @@
 
 					weather_div.innerHTML = `
 						<div class="row align-items-center">
-							<div class="col-sm-1"><img width="84" height="84" src=${icon_url} /></div>
+							<div id="weather_icon" class="col-sm-1"><img width="84" height="84" src=${icon_url} /></div>
 							<div class="col-sm-11">
 								<div><strong>${temperature_f}&deg;F (${temperature_c}&deg;C) and ${summary}</strong></div>
-								<div>${hourly_summary} with a high of ${todays_high}&deg;F (${todays_high_c}&deg;C) and a low of ${todays_low}&deg;F (${todays_low_c}&deg;C). There is a ${todays_precipProbability}% chance of rain.</div>
+								<div>${hourly_summary} with a high of ${todays_high}&deg;F (${todays_high_c}&deg;C) and a low of ${todays_low}&deg;F (${todays_low_c}&deg;C). Chance of rain: ${todays_precipProbability}%.</div>
 							</div>
 						</div>
 					`;
