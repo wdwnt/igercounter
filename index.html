@@ -77,8 +77,10 @@ body{
     background-color: transparent;
 }
 .weather-container{
+/*
     width: 100vw;
     height: 100vh;
+*/
     display:flex;
 }
 .card-wrapper{
@@ -108,12 +110,12 @@ body{
 .weather-card{
     width: 200px;
     padding: 16px;
-    margin-bottom: 60px;
+    margin-bottom: 0px;
     text-align: center;
-    background-color: rgb(25,35,45);
+    background-color: rgb(127, 220, 255);
     box-sizing: border-box;
     transition: all 500ms ease-out;
-    transform: rotateY(180deg);
+/*     transform: rotateY(180deg); */
     backface-visibility: hidden;
 }
 .weather-card:hover{
@@ -133,6 +135,7 @@ body{
     margin: 5px 0 10px 0;
     font-size: 4em;
     color: white;
+    background-color: rgb(25, 99, 127)
 }
 .card-info{
     padding-top: 8px;
@@ -379,49 +382,39 @@ body{
 					weather_div.innerHTML = `
 <main class="weather-container">
     <div class="card-wrapper">
-        <section class="weather-card anim-flip">
+        <section class="weather-card">
             <header>
-                <h1 class="card-header">Currently</h1>
+                <h1 class="card-header">Current</h1>
             </header>
-            <p class="card-temp box-highlight">${temperature_f}&deg;</p>
-            <div class="icon">
-                <div class="cloud-group">
-                    <img width="84" height="84" src=${icon_url} />
-                </div>
-            </div>
+            <p class="card-temp box-highlight"><img width="84" height="84" src=${icon_url} /></p>
             <p class="card-info">${summary}</p>
         </section>
-        <section class="weather-card anim-flip anim-flip-card-2">
+        <section class="weather-card">
+            <header>
+                <h1 class="card-header">Temp</h1>
+            </header>
+            <p class="card-temp box-highlight">${temperature_f}&deg;</p>
+            <p class="card-info"></p>
+        </section>
+        <section class="weather-card">
             <header>
                 <h1 class="card-header">High</h1>
             </header>
             <p class="card-temp box-highlight">${todays_high}&deg;</p>
-            <div class="icon">
-                <div class="cloud-group">
-                </div>
-            </div>
             <p class="card-info"></p>
         </section>
-        <section class="weather-card anim-flip anim-flip-card-3">
+        <section class="weather-card">
             <header>
                 <h1 class="card-header">Low</h1>
             </header>
             <p class="card-temp box-highlight">${todays_low}&deg;</p>
-            <div class="icon">
-                <div class="cloud-group">
-                </div>
-            </div>
             <p class="card-info"></p>
         </section>
-        <section class="weather-card anim-flip anim-flip-card-4">
+        <section class="weather-card">
             <header>
-                <h1 class="card-header">Chance of Precip.</h1>
+                <h1 class="card-header">Rain</h1>
             </header>
             <p class="card-temp box-highlight">${todays_precipProbability}%</p>
-            <div class="icon">
-                <div class="cloud-group">
-                </div>
-            </div>
             <p class="card-info"></p>
         </section>
     </div>
