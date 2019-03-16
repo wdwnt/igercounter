@@ -136,7 +136,7 @@
 					var hourly_summary = weather.hourly.summary.replace('.', '');
 
 					var todays_weather = weather.daily.data[0];
-					var todays_precipProbability = todays_weather.precipProbability * 100;
+					var todays_precipProbability = (todays_weather.precipProbability * 100).toFixed();
 					var todays_high = todays_weather.temperatureHigh.toFixed();
 					var todays_high_c = fahrenheitToCelsius(todays_high);
 					var todays_low = todays_weather.temperatureLow.toFixed();
