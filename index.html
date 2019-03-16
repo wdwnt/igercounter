@@ -15,6 +15,10 @@
 				font-weight: 700;
 			}
 
+			.card {
+				min-height: 508px;
+			}
+
 			.card ul {
 				list-style: none;
 				margin: 0;
@@ -39,7 +43,7 @@
 			.card-header {
 				background: #1b7cf5;
 				color: #ffffff;
-				font-size: 28px;
+				font-size: 24px;
 				font-weight: bold;
 			}
 
@@ -58,6 +62,7 @@
 
 			#weather_section {
 				margin-bottom: 32px;
+				margin-top: 32px;
 			}
 		</style>
 	</head>
@@ -67,13 +72,13 @@
 				<h5 class="card-header">Today at Walt Disney World - <span id="date"></span></h5>
 				<div class="card-body">
 					<div class="row">
-						<div id="weather_section" class="col-sm-12">
-							<h3 class="header">Current weather <small><a href="https://darksky.net/poweredby/">Powered by Dark Sky</a></small></h3>
-							<div id="weather"></div>
-						</div>
 						<div class="col-sm-12">
 							<h3 class="header">Today's Park Hours</h3>
 							<ul id="parks"></ul>
+						</div>
+						<div id="weather_section" class="col-sm-12">
+							<h3 class="header">Weather <small><a href="https://darksky.net/poweredby/">Powered by Dark Sky</a></small></h3>
+							<div id="weather"></div>
 						</div>
 					</div>
 					<img class="float-right" width="300" src="https://wdwnt.com/wp-content/uploads/2017/11/wdwnt_logo_2017_v2.png" alt="Presented by wdwnt.com" />
@@ -81,7 +86,25 @@
 			</div>
 		</div>
 
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.js"></script>
+		<script id="weather-card-template" type="text/x-handlebars-template">
+			<div class="col-sm-3">
+				<div class="card">
+					<div class="card-header">
+						{{card_title}}
+					</div>
+					<img src="{{image_src}}" class="card-img-top" alt="{{icon}}">
+					<div class="card-body">
+						<h5 class="card-text">{{card_title}}</h5>
+						<p class="card-text">{{{card_text}}}</p>
+					</div>
+				</div>
+			</div>
+		</script>
 		<script type="text/javascript">
+			let source = document.getElementById("weather-card-template").innerHTML;
+			const weather_card_template = Handlebars.compile(source);
+
 			const getParameterByName = (name) => {
 				let url = window.location.href;
 				name = name.replace(/[\[\]]/g, '\\$&');
@@ -96,6 +119,21 @@
 				return ((value - 32) * (5/9)).toFixed();
 			}
 
+			const buildWeatherCard = (title, weather) => {
+				let temperature = (weather.temperature || weather.temperatureHigh).toFixed();
+				let summary = weather.summary.replace('.', '');
+				let precipProbability = (weather.precipProbability * 100).toFixed();
+
+				var context = {
+					card_title: title,
+					icon: weather.icon,
+					image_src: `https://darksky.net/images/weather-icons/${weather.icon}.png`,
+					card_text: `${summary} and ${temperature}&deg;F (${fahrenheitToCelsius(temperature)}&deg;C).<br /><br />Chance of rain: ${precipProbability}%`
+				};
+
+				return weather_card_template(context);
+			}
+
 			const parks_ul = document.getElementById('parks');
 			const weather_div = document.getElementById('weather');
 			const destination = getParameterByName('destination') || 'wdw';
@@ -106,13 +144,12 @@
 			const BACKGROUND_IMAGE = '';
 
 			const date_div = document.getElementById('date');
-			date_div.innerHTML = new Date().toLocaleDateString("en-US", { timeZone: "America/New_York" });
+			date_div.innerHTML = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' });
 
 			document.querySelector('body').style.backgroundImage = `url(${background})` || '';
 
 			document.addEventListener('DOMContentLoaded', function() {
 				fetch(PARKS_API_URL).then(res => res.json()).then((parks) => {
-					// load the data into the page
 					parks.filter((park) => {
 						return park.destination === destination;
 					}).forEach((park) => {
@@ -127,30 +164,16 @@
 				});
 
 				fetch(WEATHER_API_URL).then(res => res.json()).then((weather) => {
-					var currently = weather.currently;
-					var summary = currently.summary.toLowerCase();
-					var icon_url = `https://darksky.net/images/weather-icons/${currently.icon}.png`;
-					var temperature_f = weather.currently.temperature.toFixed();
-					var temperature_c = fahrenheitToCelsius(temperature_f);
+					var currently = buildWeatherCard('Right now', weather.currently);
 
-					var hourly_summary = weather.hourly.summary.replace('.', '');
+					var daily = weather.daily.data;
+					var today = buildWeatherCard('Today', daily[0]);
+					var tomorrow = buildWeatherCard('Tomorrow', daily[1]);
 
-					var todays_weather = weather.daily.data[0];
-					var todays_precipProbability = (todays_weather.precipProbability * 100).toFixed();
-					var todays_high = todays_weather.temperatureHigh.toFixed();
-					var todays_high_c = fahrenheitToCelsius(todays_high);
-					var todays_low = todays_weather.temperatureLow.toFixed();
-					var todays_low_c = fahrenheitToCelsius(todays_low);
+					let day = new Date(daily[2].time * 1000).toLocaleDateString('en-US', { timeZone: 'America/New_York', weekday: 'long' });
+					var twoDaysFromNow = buildWeatherCard(day, daily[2]);
 
-					weather_div.innerHTML = `
-						<div class="row align-items-center">
-							<div id="weather_icon" class="col-sm-1"><img width="84" height="84" src=${icon_url} /></div>
-							<div class="col-sm-11">
-								<div><strong>${temperature_f}&deg;F (${temperature_c}&deg;C) and ${summary}</strong></div>
-								<div>${hourly_summary} with a high of ${todays_high}&deg;F (${todays_high_c}&deg;C) and a low of ${todays_low}&deg;F (${todays_low_c}&deg;C). Chance of rain: ${todays_precipProbability}%.</div>
-							</div>
-						</div>
-					`;
+					weather_div.innerHTML = '<div class="row">' + currently + today + tomorrow + twoDaysFromNow + '</div>';
 				});
 			}, false);
 		</script>
