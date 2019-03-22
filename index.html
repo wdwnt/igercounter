@@ -143,8 +143,19 @@
 				if (destination === 'dlr') {
 					presented_by_url = 'https://dlnewstoday.com/wp-content/uploads/2018/11/dlnt.png';
 					destination_name = 'Disneyland';
+					timezone = 'America/Los_Angeles';
 				} else if (destination === 'tdr') {
 					destination_name = 'Tokyo Disney Resort';
+					timezone = 'Asia/Tokyo';
+				} else if (destination === 'dlp') {
+					destination_name = 'Disneyland Paris';
+					timezone = 'Europe/Paris';
+				} else if (destination === 'hkdl') {
+					destination_name = 'Hong Kong Disneyland';
+					timezone = 'Asia/Hong_Kong';
+				} else if (destination === 'shdr') {
+					destination_name = 'Shanghai Disney Resort';
+					timezone = 'Asia/Shanghai';
 				}
 
 				return {
@@ -182,11 +193,13 @@
 						return park.destination === destination;
 					}).forEach((park) => {
 						const li = document.createElement('li');
+
 						li.innerHTML = `
 							<div class="image" style="background-image: url('${park.imageUrl}');"></div>
 							<h3>${park.name}</h3>
 							<h6>${park.todaysHours}</h6>
 						`;
+
 						parks_ul.appendChild(li);
 					});
 				});
