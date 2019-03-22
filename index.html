@@ -70,7 +70,7 @@
 	<body>
 		<div class="container">
 			<div class="card">
-				<h5 class="card-header">Today at Walt Disney World - <span id="date"></span></h5>
+				<h5 class="card-header">Today at <span id="destination-name">Walt Disney World</span> - <span id="date"></span></h5>
 				<div class="card-body">
 					<div class="row">
 						<div class="col-sm-12">
@@ -82,7 +82,7 @@
 							<div id="weather"></div>
 						</div>
 					</div>
-					<img class="float-right" width="300" src="https://wdwnt.com/wp-content/uploads/2017/11/wdwnt_logo_2017_v2.png" alt="Presented by wdwnt.com" />
+					<img id="presented-by-image" class="float-right" width="300" src="https://wdwnt.com/wp-content/uploads/2017/11/wdwnt_logo_2017_v2.png" alt="Presented by wdwnt.com" />
 				</div>
 			</div>
 		</div>
@@ -135,9 +135,47 @@
 				return weather_card_template(context);
 			}
 
+			const buildDestinationInformation = (destination) => {
+				let presented_by_url = 'https://wdwnt.com/wp-content/uploads/2017/11/wdwnt_logo_2017_v2.png';
+				let destination_name = 'Walt Disney World';
+				let timezone = 'America/New_York';
+
+				if (destination === 'dlr') {
+					presented_by_url = 'https://dlnewstoday.com/wp-content/uploads/2018/11/dlnt.png';
+					destination_name = 'Disneyland';
+					timezone = 'America/Los_Angeles';
+				} else if (destination === 'tdr') {
+					destination_name = 'Tokyo Disney Resort';
+					timezone = 'Asia/Tokyo';
+				} else if (destination === 'dlp') {
+					destination_name = 'Disneyland Paris';
+					timezone = 'Europe/Paris';
+				} else if (destination === 'hkdl') {
+					destination_name = 'Hong Kong Disneyland';
+					timezone = 'Asia/Hong_Kong';
+				} else if (destination === 'shdr') {
+					destination_name = 'Shanghai Disney Resort';
+					timezone = 'Asia/Shanghai';
+				}
+
+				return {
+					destination_name,
+					presented_by_url,
+					timezone
+				}
+			}
+
 			const parks_ul = document.getElementById('parks');
 			const weather_div = document.getElementById('weather');
+
 			const destination = getParameterByName('destination') || 'wdw';
+			let destination_information = buildDestinationInformation(destination);
+
+			const presented_by_image = document.getElementById('presented-by-image');
+			presented_by_image.src = destination_information.presented_by_url;
+			const destination_name_span = document.getElementById('destination-name');
+			destination_name_span.innerHTML = destination_information.destination_name;
+
 			const background = getParameterByName('background');
 
 			const PARKS_API_URL = 'https://wdwntnowapi.azurewebsites.net/api/v2/mobile/parks';
@@ -145,7 +183,7 @@
 			const BACKGROUND_IMAGE = '';
 
 			const date_div = document.getElementById('date');
-			date_div.innerHTML = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' });
+			date_div.innerHTML = new Date().toLocaleDateString('en-US', { timeZone: destination_information.timezone });
 
 			document.querySelector('body').style.backgroundImage = `url(${background})` || '';
 
@@ -155,11 +193,13 @@
 						return park.destination === destination;
 					}).forEach((park) => {
 						const li = document.createElement('li');
+
 						li.innerHTML = `
 							<div class="image" style="background-image: url('${park.imageUrl}');"></div>
 							<h3>${park.name}</h3>
 							<h6>${park.todaysHours}</h6>
 						`;
+
 						parks_ul.appendChild(li);
 					});
 				});
@@ -171,7 +211,7 @@
 					var today = buildWeatherCard('Today', daily[0]);
 					var tomorrow = buildWeatherCard('Tomorrow', daily[1]);
 
-					let day = new Date(daily[2].time * 1000).toLocaleDateString('en-US', { timeZone: 'America/New_York', weekday: 'long' });
+					let day = new Date(daily[2].time * 1000).toLocaleDateString('en-US', { timeZone: destination_information.timezone, weekday: 'long' });
 					var twoDaysFromNow = buildWeatherCard(day, daily[2]);
 
 					weather_div.innerHTML = '<div class="row">' + currently + today + tomorrow + twoDaysFromNow + '</div>';
