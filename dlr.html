@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:700" rel="stylesheet">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<style>
+			body {
+				background-color: #c4ddfc;
+				font-family: 'Open Sans', sans-serif;
+			}
+
+			h2 {
+				font-family: 'Open Sans Condensed', sans-serif;
+				font-weight: 700;
+			}
+
+			.card {
+				min-height: 508px;
+			}
+
+			.card ul {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+			}
+
+			.card li {
+				float: left;
+				width: 50%;
+			}
+
+			.card li .image {
+				background-position: 50%;
+				background-size: cover;
+				border: 1px solid #dcdcdc;
+				width: 100px;
+				height: 75px;
+				float: left;
+				margin-right: 20px;
+			}
+
+			.card-header {
+				background: #1b7cf5;
+				color: #ffffff;
+				font-size: 24px;
+				font-weight: bold;
+			}
+
+			.container {
+				margin-top: 20px;
+			}
+
+			.header {
+				border-bottom: 1px solid #dcdcdc;
+				font-weight: bold;
+			}
+
+			h3 small {
+				font-size: 12px;
+			}
+
+			#weather_section {
+				margin-bottom: 32px;
+				margin-top: 32px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="card">
+				<h5 class="card-header">Today at <span id="destination-name">Disneyland</span> - <span id="date"></span></h5>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-sm-12">
+							<h3 class="header">Park Hours</h3>
+							<ul id="parks"></ul>
+						</div>
+						<div id="weather_section" class="col-sm-12">
+							<h3 class="header">Weather <small><a href="https://darksky.net/poweredby/">Powered by Dark Sky</a></small></h3>
+							<div id="weather"></div>
+						</div>
+					</div>
+					<img id="presented-by-image" class="float-right" width="300" src="https://wdwnt.com/wp-content/uploads/2017/11/wdwnt_logo_2017_v2.png" alt="Presented by wdwnt.com" />
+				</div>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.0/handlebars.js"></script>
+		<script id="weather-card-template" type="text/x-handlebars-template">
+			<div class="col-sm-3">
+				<div class="card">
+					<div class="card-header">
+						{{card_title}}
+					</div>
+					<img src="{{image_src}}" class="card-img-top" alt="{{icon}}">
+					<div class="card-body">
+						<h5 class="card-text">{{card_title}}</h5>
+						<p class="card-text">{{{card_text}}}</p>
+					</div>
+				</div>
+			</div>
+		</script>
+		<script type="text/javascript">
+			let source = document.getElementById("weather-card-template").innerHTML;
+			const weather_card_template = Handlebars.compile(source);
+
+			const getParameterByName = (name) => {
+				let url = window.location.href;
+				name = name.replace(/[\[\]]/g, '\\$&');
+				let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+				results = regex.exec(url);
+				if (!results) return null;
+				if (!results[2]) return '';
+				return decodeURIComponent(results[2].replace(/\+/g, ' '));
+			}
+
+			const fahrenheitToCelsius = (value) => {
+				return ((value - 32) * (5/9)).toFixed();
+			}
+
+			const buildWeatherCard = (title, weather) => {
+				let temperature = (weather.temperature || weather.temperatureHigh).toFixed();
+				let summary = weather.summary.replace('.', '');
+				let precipProbability = (weather.precipProbability * 100).toFixed();
+
+				var context = {
+					card_title: title,
+					icon: weather.icon,
+					image_src: `https://darksky.net/images/weather-icons/${weather.icon}.png`,
+					card_text: `${summary} and ${temperature}&deg;F (${fahrenheitToCelsius(temperature)}&deg;C).<br /><br />Chance of rain: ${precipProbability}%`
+				};
+
+				return weather_card_template(context);
+			}
+
+			const buildDestinationInformation = (destination) => {
+				return {
+					destination_name: 'Disneyland',
+					presented_by_url: 'https://dlnewstoday.com/wp-content/uploads/2018/11/dlnt.png',
+					timezone: 'America/Los_Angeles'
+				}
+			}
+
+			const parks_ul = document.getElementById('parks');
+			const weather_div = document.getElementById('weather');
+
+			const destination = getParameterByName('destination') || 'dlr';
+			let destination_information = buildDestinationInformation(destination);
+
+			const presented_by_image = document.getElementById('presented-by-image');
+			presented_by_image.src = destination_information.presented_by_url;
+			const destination_name_span = document.getElementById('destination-name');
+			destination_name_span.innerHTML = destination_information.destination_name;
+
+			const background = getParameterByName('background');
+
+			const PARKS_API_URL = 'https://wdwntnowapi.azurewebsites.net/api/v2/mobile/parks';
+			const WEATHER_API_URL = 'https://weather.wdwnt.com/api/' + destination;
+			const BACKGROUND_IMAGE = '';
+
+			const date_div = document.getElementById('date');
+			date_div.innerHTML = new Date().toLocaleDateString('en-US', { timeZone: destination_information.timezone });
+
+			document.querySelector('body').style.backgroundImage = `url(${background})` || '';
+
+			document.addEventListener('DOMContentLoaded', function() {
+				fetch(PARKS_API_URL).then(res => res.json()).then((parks) => {
+					parks.filter((park) => {
+						return park.destination === destination;
+					}).forEach((park) => {
+						const li = document.createElement('li');
+
+						li.innerHTML = `
+							<div class="image" style="background-image: url('${park.imageUrl}');"></div>
+							<h3>${park.name}</h3>
+							<h6>${park.todaysHours}</h6>
+						`;
+
+						parks_ul.appendChild(li);
+					});
+				});
+
+				fetch(WEATHER_API_URL).then(res => res.json()).then((weather) => {
+					var currently = buildWeatherCard('Right now', weather.currently);
+
+					var daily = weather.daily.data;
+					var today = buildWeatherCard('Today', daily[0]);
+					var tomorrow = buildWeatherCard('Tomorrow', daily[1]);
+
+					let day = new Date(daily[2].time * 1000).toLocaleDateString('en-US', { timeZone: destination_information.timezone, weekday: 'long' });
+					var twoDaysFromNow = buildWeatherCard(day, daily[2]);
+
+					weather_div.innerHTML = '<div class="row">' + currently + today + tomorrow + twoDaysFromNow + '</div>';
+				});
+			}, false);
+		</script>
+	</body>
+</html>
