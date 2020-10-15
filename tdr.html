@@ -82,7 +82,7 @@
     <div class="container">
       <div class="card">
         <h5 class="card-header">
-          Today at <span id="destination-name">Disneyland</span> -
+          Today at <span id="destination-name">Tokyo Disney Resort</span> -
           <span id="date"></span>
         </h5>
         <div class="card-body">
@@ -105,8 +105,8 @@
             id="presented-by-image"
             class="float-right"
             width="300"
-            src="https://wdwnt.com/wp-content/uploads/2017/11/wdwnt_logo_2017_v2.png"
-            alt="Presented by wdwnt.com"
+            src="https://wdwntsirv.sirv.com/wdwnt.com/2020/07/Logo-with-Tagline.png"
+            alt="Presented by wdwnt.jp"
           />
         </div>
       </div>
@@ -165,18 +165,42 @@
       };
 
       const buildDestinationInformation = destination => {
+        let presented_by_url =
+          'https://wdwnt.com/wp-content/uploads/2017/11/wdwnt_logo_2017_v2.png';
+        let destination_name = 'Walt Disney World';
+        let timezone = 'America/New_York';
+
+        if (destination === 'dlr') {
+          presented_by_url =
+            'https://dlnewstoday.com/wp-content/uploads/2018/11/dlnt.png';
+          destination_name = 'Disneyland';
+          timezone = 'America/Los_Angeles';
+        } else if (destination === 'tdr') {
+          presented_by_url = 'https://wdwntsirv.sirv.com/wdwnt.com/2020/07/Logo-with-Tagline.png';
+          destination_name = 'Tokyo Disney Resort';
+          timezone = 'Asia/Tokyo';
+        } else if (destination === 'dlp') {
+          destination_name = 'Disneyland Paris';
+          timezone = 'Europe/Paris';
+        } else if (destination === 'hkdl') {
+          destination_name = 'Hong Kong Disneyland';
+          timezone = 'Asia/Hong_Kong';
+        } else if (destination === 'shdr') {
+          destination_name = 'Shanghai Disney Resort';
+          timezone = 'Asia/Shanghai';
+        }
+
         return {
-          destination_name: 'Disneyland',
-          presented_by_url:
-            'https://dlnewstoday.com/wp-content/uploads/2018/11/dlnt.png',
-          timezone: 'America/Los_Angeles'
+          destination_name,
+          presented_by_url,
+          timezone
         };
       };
 
       const parks_ul = document.getElementById('parks');
       const weather_div = document.getElementById('weather');
 
-      const destination = getParameterByName('destination') || 'dlr';
+      const destination = getParameterByName('destination') || 'tdr';
       let destination_information = buildDestinationInformation(destination);
 
       const presented_by_image = document.getElementById('presented-by-image');
@@ -188,12 +212,12 @@
       const background = getParameterByName('background');
 
       const PARKS_API_URL =
-        'https://wdwnt-now-api.herokuapp.com/api/destinations/1/parks?sort=true';
+        'https://wdwnt-now-api.herokuapp.com/api/destinations/2/parks?sort=true';
       const WEATHER_API_URL = 'https://weather.wdwnt.com/api/' + destination;
       const BACKGROUND_IMAGE = '';
 
       const date_div = document.getElementById('date');
-      date_div.innerHTML = new Date().toLocaleDateString('en-US', {
+      date_div.innerHTML = new Date().toLocaleDateString('jp', {
         timeZone: destination_information.timezone
       });
 
@@ -229,7 +253,7 @@
               var tomorrow = buildWeatherCard('Tomorrow', daily[1]);
 
               let day = new Date(daily[2].time * 1000).toLocaleDateString(
-                'en-US',
+                'jp',
                 {
                   timeZone: destination_information.timezone,
                   weekday: 'long'
