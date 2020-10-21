@@ -22,7 +22,7 @@
     <div class="container">
       <div class="card">
         <h5 class="card-header">
-          Today at <span id="destination-name">Walt Disney World</span> -
+          Today at <span id="destination-name">Shanghai Disney Resort</span> -
           <span id="date"></span>
         </h5>
         <div class="card-body">
@@ -34,11 +34,9 @@
             <div id="weather_section" class="col-sm-12">
               <h3 class="header">
                 Weather
-                <small
-                  ><a href="https://darksky.net/poweredby/"
-                    >Powered by Dark Sky</a
-                  ></small
-                >
+                <small>
+                  <a href="https://darksky.net/poweredby/">Powered by Dark Sky</a>
+                </small>
               </h3>
               <div id="weather"></div>
             </div>
@@ -47,8 +45,8 @@
             id="presented-by-image"
             class="float-right"
             width="300"
-            src="https://wdwnt.com/wp-content/uploads/2017/11/wdwnt_logo_2017_v2.png"
-            alt="Presented by wdwnt.com"
+            src="https://wdwntsirv.sirv.com/wdwnt.com/2020/07/Logo-with-Tagline.png"
+            alt="Presented by wdwnt.jp"
           />
         </div>
       </div>
@@ -118,6 +116,7 @@
           destination_name = 'Disneyland';
           timezone = 'America/Los_Angeles';
         } else if (destination === 'tdr') {
+          presented_by_url = 'https://wdwntsirv.sirv.com/wdwnt.com/2020/07/Logo-with-Tagline.png';
           destination_name = 'Tokyo Disney Resort';
           timezone = 'Asia/Tokyo';
         } else if (destination === 'dlp') {
@@ -141,7 +140,7 @@
       const parks_ul = document.getElementById('parks');
       const weather_div = document.getElementById('weather');
 
-      const destination = getParameterByName('destination') || 'wdw';
+      const destination = getParameterByName('destination') || 'shdr';
       let destination_information = buildDestinationInformation(destination);
 
       const presented_by_image = document.getElementById('presented-by-image');
@@ -153,12 +152,12 @@
       const background = getParameterByName('background');
 
       const PARKS_API_URL =
-        'https://wdwnt-now-api.herokuapp.com/api/destinations/0/parks?sort=true';
+        'https://wdwnt-now-api.herokuapp.com/api/destinations/5/parks?sort=true';
       const WEATHER_API_URL = 'https://weather.wdwnt.com/api/' + destination;
       const BACKGROUND_IMAGE = '';
 
       const date_div = document.getElementById('date');
-      date_div.innerHTML = new Date().toLocaleDateString('en-US', {
+      date_div.innerHTML = new Date().toLocaleDateString('zh-CN', {
         timeZone: destination_information.timezone
       });
 
@@ -194,7 +193,7 @@
               var tomorrow = buildWeatherCard('Tomorrow', daily[1]);
 
               let day = new Date(daily[2].time * 1000).toLocaleDateString(
-                'en-US',
+                'jp',
                 {
                   timeZone: destination_information.timezone,
                   weekday: 'long'
