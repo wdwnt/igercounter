@@ -2,7 +2,7 @@
 
 Daily forecast of WDW page to be created and shared
 
- There is a page for weach park with index being Walt Disney World
+ There is a page for each park with index being Walt Disney World
  
 ## Sections
 
