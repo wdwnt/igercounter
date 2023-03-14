@@ -6,7 +6,6 @@
     <link rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900|Work+Sans:700"
     />
-    <link rel="stylesheet" href="css/bootstrap.4.3.1.min.css" />
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/weather-icons.min.css" />
   </head>
@@ -18,28 +17,23 @@
           <span id="date"></span>
         </h5>
         <div class="card-body">
-          <div class="row">
-            <div class="col-sm-12">
-              <h3 class="header">Park Hours</h3>
-              <ul id="parks"></ul>
-            </div>
-            <div id="weather_section" class="col-sm-12">
-              <h3 class="header">
-                Weather
-                <small
-                  ><a href="https://openweathermap.org/"
-                    >Weather data provided by OpenWeather</a
-                  ></small
-                >
-              </h3>
-              <div id="weather">
-                <div id="weather-row" class="row"></div>
-              </div>
-            </div>
+          <div class="section">
+            <h3 class="header">Park Hours</h3>
+            <ul id="parks"></ul>
+          </div>
+          <div id="weather-section" class="section">
+            <h3 class="header">
+              Weather
+              <small
+                ><a href="https://openweathermap.org/"
+                  >Weather data provided by OpenWeather</a
+                ></small
+              >
+            </h3>
+            <div id="weather"></div>
           </div>
           <img
             id="presented-by-image"
-            class="float-right"
             width="300"
             src="wdwnt_logo.png"
             alt="Presented by wdwnt.com"
@@ -49,14 +43,13 @@
     </div>
 
     <template id="weather-card-template">
-      <div class="col-sm-3">
+      <div class="weather-card-body">
       	<div class="card">
           <div class="card-header"></div>
           <div class="weather-icon">
             <i class="wi"></i>
           </div>
       		<div class="card-body">
-            <h5 id="weather-card-title" class="card-text"></h5>
             <p id="weather-card-text" class="card-text"></p>
       		</div>
       	</div>

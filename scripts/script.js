@@ -1,5 +1,5 @@
 const parks_ul = document.getElementById('parks');
-const weather_div = document.getElementById('weather-row');
+const weather_div = document.getElementById('weather');
 
 const weather_card_template = document.getElementById('weather-card-template');
 
@@ -17,7 +17,7 @@ const fahrenheitToCelsius = value => {
   return ((value - 32) * (5 / 9)).toFixed();
 };
 
-const buildWeatherCard = (title, weather) => {
+const buildWeatherCard = (title, weather, column) => {
   const temperature = (
     weather.temperature || weather.temperatureHigh
   ).toFixed();
@@ -34,8 +34,8 @@ const buildWeatherCard = (title, weather) => {
 
   const instance = document.importNode(weather_card_template.content, true);
 
+  instance.querySelector('.weather-card-body').classList.add(column);
   instance.querySelector('.card-header').innerHTML = title;
-  instance.querySelector('#weather-card-title').innerHTML = title;
 
   const card_text = `${summary} and ${temperature}&deg;F (${fahrenheitToCelsius(
       temperature
@@ -100,12 +100,12 @@ document.addEventListener(
     fetch(WEATHER_API_URL)
       .then(res => res.json())
       .then(weather => {
-        buildWeatherCard('Right now', weather[destination].currently);
+        buildWeatherCard('Right now', weather[destination].currently, 'now');
 
         const daily = weather[destination].daily.data;
 
-        buildWeatherCard('Today', daily[0]);
-        buildWeatherCard('Tomorrow', daily[1]);
+        buildWeatherCard('Today', daily[0], 'today');
+        buildWeatherCard('Tomorrow', daily[1], 'tomorrow');
 
         const day = new Date(daily[2].time * 1000).toLocaleDateString(
           'en-US',
@@ -115,7 +115,7 @@ document.addEventListener(
           }
         );
 
-        buildWeatherCard(day, daily[2]);
+        buildWeatherCard(day, daily[2], 'two-days');
       });
   },
   false
