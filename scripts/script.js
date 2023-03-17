@@ -100,9 +100,9 @@ document.addEventListener(
     fetch(WEATHER_API_URL)
       .then(res => res.json())
       .then(weather => {
-        buildWeatherCard('Right now', weather[destination].currently, 'now');
+        buildWeatherCard('Right now', weather.currently, 'now');
 
-        const daily = weather[destination].daily.data;
+        const daily = weather.daily.data;
 
         buildWeatherCard('Today', daily[0], 'today');
         buildWeatherCard('Tomorrow', daily[1], 'tomorrow');
