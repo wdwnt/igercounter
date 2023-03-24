@@ -1,0 +1,172 @@
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+a {
+  background-color: transparent;
+  color: #007bff;
+  text-decoration: none;
+}
+
+body {
+  background-color: #c4ddfc;
+  color: #212529;
+  font-family: 'Lato', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+}
+
+.card {
+  background-clip: border-box;
+  background-color: #ffffff;
+  border-radius: 0.25rem;
+  min-height: 430px;
+  min-width: 0;
+}
+
+.card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card li {
+  float: left;
+  width: 50%;
+}
+
+.card li .image {
+  background-position: 50%;
+  background-size: cover;
+  border: 1px solid #dcdcdc;
+  width: 100px;
+  height: 75px;
+  float: left;
+  margin-right: 20px;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+}
+
+.card-header {
+  background: #1b7cf5;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 0;
+  padding: 0.75rem 1.25rem;
+}
+
+.card-header:first-child {
+  border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
+}
+
+.container {
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1140px;
+  padding-left: 16px;
+  padding-right: 16px;
+  width: 100%;
+}
+
+.header {
+  border-bottom: 1px solid #dcdcdc;
+  font-weight: bold;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+h2, h5 {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.75rem;
+  font-weight: 500;
+}
+
+h3 small {
+  font-size: 12px;
+}
+
+h4 {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+h5 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+h6 {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.now {
+  grid-area: now;
+}
+
+#presented-by-image {
+  margin-left: auto;
+}
+
+.section {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+}
+
+.small, small {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.today {
+  grid-area: today;
+}
+
+.tomorrow {
+  grid-area: tomorrow;
+}
+
+.two-days {
+  grid-area: two-days;
+}
+
+.weather-card-body {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  text-align: center;
+  width: 250px;
+}
+
+.weather-icon {
+  font-size: 100px;
+  padding-top: 16px;
+}
+
+#weather-section {
+  margin-bottom: 32px;
+  margin-top: 32px;
+}
+
+#weather {
+  display: grid;
+  gap: 8px;
+  grid-template-areas: "now today tomorrow two-days";
+}
